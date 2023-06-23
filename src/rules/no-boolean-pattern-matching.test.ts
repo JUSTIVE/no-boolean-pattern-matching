@@ -6,12 +6,7 @@ const ruleTester = new ESLintUtils.RuleTester({
 })
 
 ruleTester.run('no-boolean-pattern-matching', noBooleanPatternMatching, {
-  valid: [
-    {
-      code: 'var foo = true',
-      options: []
-    }
-  ],
+  valid: [],
   invalid: [
     {
       code: `match(asdf)

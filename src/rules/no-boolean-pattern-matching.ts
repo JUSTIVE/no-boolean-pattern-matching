@@ -1,6 +1,6 @@
 import { ESLintUtils } from '@typescript-eslint/utils'
 import { AST_NODE_TYPES } from '@typescript-eslint/utils'
-import { match } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
 
 const createRule = ESLintUtils.RuleCreator(
   (name) => `https://example.com/rule/${name}`
@@ -22,24 +22,54 @@ const noBooleanPatternMatching = createRule<Options, MessageIds>({
             {
               property: { type: AST_NODE_TYPES.Identifier, name: 'exhaustive' }
             },
-            (exhaustiveExpression) => {
-              match(exhaustiveExpression)
+            (exhaustiveMemberExpression) => {
+              match(exhaustiveMemberExpression)
                 .with(
                   {
                     object: {
                       type: AST_NODE_TYPES.CallExpression,
-                      callee: { property: { name: 'with' } }
+                      arguments: P.select('secondArgument'),
+                      callee: {
+                        property: { name: 'with' },
+                        type: AST_NODE_TYPES.MemberExpression,
+                        object: {
+                          arguments: P.select('firstArgument'),
+                          type: AST_NODE_TYPES.CallExpression,
+                          callee: {
+                            property: { name: 'with' },
+                            type: AST_NODE_TYPES.MemberExpression,
+                            object: {
+                              callee: {
+                                name: 'match'
+                              }
+                            }
+                          }
+                        }
+                      }
                     }
                   },
-                  (secondCallExpression) => {
-                    match(secondCallExpression)
-                      .with({}, () => {
-                        context.report({
-                          node: node,
-                          messageId: 'noFullyBooleanPatternMatching'
-                        })
-                      })
-                      .otherwise(ignore)
+                  ({ firstArgument, secondArgument }) => {
+                    const [secondBoolean] = secondArgument
+                    const [firstBoolean] = firstArgument
+                    match([firstBoolean, secondBoolean]).with(
+                      [
+                        { type: AST_NODE_TYPES.Literal },
+                        { type: AST_NODE_TYPES.Literal }
+                      ],
+                      ([first, second]) => {
+                        match([first.raw, second.raw])
+                          .with(
+                            P.union(['true', 'false'], ['false', 'true']),
+                            () => {
+                              context.report({
+                                node: node,
+                                messageId: 'noFullyBooleanPatternMatching'
+                              })
+                            }
+                          )
+                          .otherwise(ignore)
+                      }
+                    )
                   }
                 )
                 .otherwise(ignore)
@@ -47,54 +77,49 @@ const noBooleanPatternMatching = createRule<Options, MessageIds>({
           )
           .otherwise(ignore)
 
-        // if (node.property.name === 'exhaustive') {
-        // if (
-        //   node.object.type === 'CallExpression' &&
-        //   node.object.callee.property.name === 'with'
-        // )
-
-        // if (
-        //   node.object.callee.object.type === 'CallExpression' &&
-        //   node.object.callee.object.arguments[0]
-        // )
-        //   if (
-        //     node.object.callee.object.callee.type === 'MemberExpression' &&
-        //     node.object.callee.object.callee.property.name === 'with'
-        //   )
-        //     if (
-        //       node.object.callee.object.callee.object.type ===
-        //         'CallExpression' &&
-        //       node.object.callee.object.callee.object.arguments[0]
-        //     )
-        //       if (
-        //         node.object.callee.object.callee.object.callee &&
-        //         node.object.callee.object.callee.object.callee.name === 'match'
-        //       )
-        //         if (
-        //           (node.object.arguments[0].raw === 'false' &&
-        //             node.object.callee.object.arguments[0].raw === 'true') ||
-        //           (node.object.arguments[0].raw === 'true' &&
-        //             node.object.callee.object.arguments[0].raw === 'false')
-        //         )
-        // context.report({
-        //   node: node,
-        //   messageId: 'noFullyBooleanPatternMatching'
-        // })
-        // } else if (node.property.name === 'otherwise') {
-        //   if (
-        //     node.object.type === 'CallExpression' &&
-        //     node.object.callee.property.name === 'with'
-        //   )
-        //     if (node.object.arguments[0])
-        //       if (
-        //         node.object.arguments[0].raw == 'false' ||
-        //         node.object.arguments[0].raw == 'true'
-        //       )
-        //         context.report({
-        //           node: node,
-        //           messageId: 'noPartiallyBooleanPatternMatching'
-        //         })
-        // }
+        match(node)
+          .with(
+            {
+              property: { type: AST_NODE_TYPES.Identifier, name: 'otherwise' }
+            },
+            (exhaustiveMemberExpression) => {
+              match(exhaustiveMemberExpression)
+                .with(
+                  {
+                    object: {
+                      type: AST_NODE_TYPES.CallExpression,
+                      arguments: P.select('firstArgument'),
+                      callee: {
+                        property: { name: 'with' },
+                        type: AST_NODE_TYPES.MemberExpression,
+                        object: {
+                          callee: {
+                            name: 'match'
+                          }
+                        }
+                      }
+                    }
+                  },
+                  ({ firstArgument }) => {
+                    const [firstBoolean] = firstArgument
+                    match(firstBoolean).with(
+                      {
+                        type: AST_NODE_TYPES.Literal,
+                        raw: P.union('true', 'false')
+                      },
+                      () => {
+                        context.report({
+                          node: node,
+                          messageId: 'noPartiallyBooleanPatternMatching'
+                        })
+                      }
+                    )
+                  }
+                )
+                .otherwise(ignore)
+            }
+          )
+          .otherwise(ignore)
       }
     }
   },
