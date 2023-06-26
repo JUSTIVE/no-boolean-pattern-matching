@@ -1,13 +1,15 @@
 {
   "name": "eslint-plugin-no-boolean-ts-pattern",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "recommend ternary expression over pattern matching boolean values",
   "keywords": [
     "eslint",
-    "eslintplugin",
-    "eslint-plugin"
+    "eslint-plugin",
+    "typescript",
+    "type",
+    "ts-pattern"
   ],
-  "author": "no-boolean-ts-pattern",
+  "author": "JUSTIVE",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "exports": {
