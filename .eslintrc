@@ -10,8 +10,8 @@
     "es6": true,
     "es2017": true
   },
-  "plugins": ["no-boolean-pattern-matching"],
+  "plugins": ["no-boolean-ts-pattern"],
   "rules": {
-    "no-boolean-pattern-matching/no-boolean-pattern-matching": "error"
+    "no-boolean-ts-pattern/no-boolean-ts-pattern": "error"
   }
 }

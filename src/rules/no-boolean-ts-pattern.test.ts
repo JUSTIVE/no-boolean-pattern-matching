@@ -1,11 +1,11 @@
-import noBooleanPatternMatching from './no-boolean-pattern-matching'
+import noBooleanPatternMatching from './no-boolean-ts-pattern'
 import { ESLintUtils } from '@typescript-eslint/utils'
 
 const ruleTester = new ESLintUtils.RuleTester({
   parser: '@typescript-eslint/parser'
 })
 
-ruleTester.run('no-boolean-pattern-matching', noBooleanPatternMatching, {
+ruleTester.run('no-boolean-ts-pattern', noBooleanPatternMatching, {
   valid: [],
   invalid: [
     {
