@@ -12,6 +12,6 @@
   },
   "plugins": ["no-boolean-ts-pattern"],
   "rules": {
-    "no-boolean-ts-pattern/no-boolean-ts-pattern": "error"
+    "no-boolean-ts-pattern/noBooleanPatternMatching": "error"
   }
 }

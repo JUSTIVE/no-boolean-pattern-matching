@@ -129,9 +129,9 @@ const noBooleanPatternMatching = createRule<Options, MessageIds>({
     type: 'suggestion',
     messages: {
       noFullyBooleanPatternMatching:
-        'F Boolean pattern matching is not allowed',
+        '불리언 값에 대한 패턴 매칭은 권장되지 않습니다. 삼항연산자로 대체해주세요',
       noPartiallyBooleanPatternMatching:
-        'P Boolean pattern matching is not allowed'
+        '불리언 값에 대한 패턴 매칭은 권장되지 않습니다. 삼항연산자로 대체해주세요'
     },
     fixable: 'code',
     schema: [],

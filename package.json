@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-no-boolean-ts-pattern",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "recommend ternary expression over pattern matching boolean values",
   "keywords": [
     "eslint",
