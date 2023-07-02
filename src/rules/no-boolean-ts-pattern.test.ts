@@ -13,11 +13,20 @@ ruleTester.run('no-boolean-ts-pattern', noBooleanPatternMatching, {
     .with(true, ()=>{})
     .with(false, ()=>{})
     .exhaustive()`,
-      errors: [{ messageId: 'noFullyBooleanPatternMatching' }]
+      
+      errors: [{ messageId: 'noFullyBooleanPatternMatching'  }] ,
+      output: 
+`asdf\n\t?() => {
+}\n\t:() => {
+}`
     },
     {
       code: 'match(asdf).with(false, ()=>{}).with(true, ()=>{}).exhaustive()',
-      errors: [{ messageId: 'noFullyBooleanPatternMatching' }]
+      errors: [{ messageId: 'noFullyBooleanPatternMatching' }],
+      output: 
+`asdf\n\t?() => {
+}\n\t:() => {
+}`
     },
     {
       code: 'match(asdf).with(false, ()=>{}).otherwise()',

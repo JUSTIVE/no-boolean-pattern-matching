@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-no-boolean-ts-pattern",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "description": "recommend ternary expression over pattern matching boolean values",
   "keywords": [
     "eslint",
@@ -30,10 +30,12 @@
     "build": "tsup-node"
   },
   "dependencies": {
+    "escodegen": "^2.1.0",
     "requireindex": "^1.2.0",
     "ts-pattern": "^5.0.1"
   },
   "devDependencies": {
+    "@types/escodegen": "^0.0.7",
     "@types/jest": "^29.5.2",
     "@typescript-eslint/parser": "^5.60.0",
     "@typescript-eslint/utils": "^5.60.0",
